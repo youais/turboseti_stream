@@ -28,6 +28,7 @@ clancy = DopplerFinder(filename="DAT_LOG_FILENAME",
                        f_start=3000,
                        f_stop=3100,
                        snr=42.0,
+                       min_drift=0.01,
                        max_drift=4.0)
  
 # Gnu Radio streamed data:
