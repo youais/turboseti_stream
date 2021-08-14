@@ -3,7 +3,7 @@
 This is a method to get turbo_seti to accept data in a streaming fashion, i.e. straight from memory, instead of reading a Filterbank or HDF5 file from disk. 
 This is especially useful for real-time pipelines where data must be analysed as it is being recorded.
 
-The immediate aim of this project is to integrate into a GNU Radio block thus be able to perform SETI searches from a Gnu Radio flowgraph.
+The immediate aim of this project is to integrate into a GNU Radio block. Thus, we are able to perform SETI searches from a Gnu Radio flowgraph.
 
 ## Requirements
 - [turbo_seti] (https://github.com/UCBerkeleySETI/turbo_seti)
