@@ -1,6 +1,6 @@
 # turboseti_stream
 
-This is way to get turbo_seti to accept data in a streaming fashion, i.e. straight from memory, instead of reading a Filterbank or HDF5 file from disk. 
+This is a method to get turbo_seti to accept data in a streaming fashion, i.e. straight from memory, instead of reading a Filterbank or HDF5 file from disk. 
 This is especially useful for real-time pipelines where data need to be analysed as they are being recorded.
 
 The aim is to integrate this package into a GNU Radio block thus be able to perform SETI searches from a Gnu Radio flowgraph.
