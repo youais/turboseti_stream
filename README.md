@@ -23,8 +23,6 @@ clancy = DopplerFinder(filename="DAT_LOG_FILENAME",
                        tstart=59423.2, 
                        tsamp=1, 
                        n_ints_in_file=16,
-                       f_start=0,
-                       f_stop=1,
                        n_fine_chans=2**20,
                        n_coarse_chan=1,
                        max_drift=4.0)
