@@ -1,6 +1,5 @@
 r""" Testspectra_gen functions"""
 
-from os import getpid
 import configparser
 import pytest
 
@@ -11,7 +10,7 @@ import spectra_gen_config as sgc
 
 
 def test_spectra_gen_main():
-    fil_file = TEMPDIR + "rubbish." + str(getpid()) + ".fil"
+    fil_file = TEMPDIR + "rubbish.fil"
     args = [fil_file, CFG_FILE]
     main(args)
 
