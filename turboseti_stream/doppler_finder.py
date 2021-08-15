@@ -240,4 +240,3 @@ class DopplerFinder():
         r""" find ET using a spectra matrix supplied by spectra_gen (synthetic) """
         self.dataloader.load_file(spectra_file_path)
         self._find_ET_common()
-
