@@ -14,7 +14,7 @@ from turbo_seti.find_doppler.kernels import Kernels
 import turbo_seti.find_doppler.find_doppler as fd
 from turbo_seti.find_doppler.file_writers import FileWriter, LogWriter
 from turbo_seti.find_doppler.turbo_seti_version import TURBO_SETI_VERSION
-from turboseti_stream.version import TURBOSETI_STREAM_VERSION
+from .version import TURBOSETI_STREAM_VERSION
 VERSION_ANNOUNCEMENTS = 'turboseti_stream version {}\nturbo_seti version {}\nblimpy version {}\nh5py version {}\n\n' \
                         .format(TURBOSETI_STREAM_VERSION, TURBO_SETI_VERSION, BLIMPY_VERSION, H5PY_VERSION)
 
