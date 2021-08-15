@@ -7,14 +7,20 @@ import math
 import numpy as np
 from pkg_resources import resource_filename
 
+from h5py import __version__ as H5PY_VERSION
 import setigen as stg
+from blimpy import __version__ as BLIMPY_VERSION
 from turbo_seti.find_doppler.kernels import Kernels
 import turbo_seti.find_doppler.find_doppler as fd
 from turbo_seti.find_doppler.file_writers import FileWriter, LogWriter
+from turbo_seti.find_doppler.turbo_seti_version import TURBO_SETI_VERSION
+from turboseti_stream.version import TURBOSETI_STREAM_VERSION
+VERSION_ANNOUNCEMENTS = 'turboseti_stream version {}\nturbo_seti version {}\nblimpy version {}\nh5py version {}\n\n' \
+                        .format(TURBOSETI_STREAM_VERSION, TURBO_SETI_VERSION, BLIMPY_VERSION, H5PY_VERSION)
 
 
-logger_name = 'find_doppler'
-logger = logging.getLogger(logger_name)
+LOGGER_NAME = 'find_doppler'
+logger = logging.getLogger(LOGGER_NAME)
 
 
 class Map(dict):
@@ -65,20 +71,20 @@ class DataLoader():
         self.drift_indices = drift_indices
         self.data_obj = data_obj
         self.spectra = [0, 0]
-        logger.debug("turboseti_stream DataLoader __init__: data_obj:", self.data_obj)
+        logger.debug("turboseti_stream DataLoader __init__: data_obj: {}".format(self.data_obj))
 
 
     def load(self, spectra):
         r""" Load telescope data from a Gnu Radio function """
         self.spectra = spectra
-        logger.debug("turboseti_stream DataLoader load: spectra shape:", self.spectra.shape)
+        logger.debug("turboseti_stream DataLoader load: spectra shape: {}".format(self.spectra.shape))
 
 
     def load_file(self, spectra_file_path):
         r""" Load synthetic data created by spectra_gen which uses setigen """
         frame = stg.Frame(spectra_file_path)
         self.spectra = frame.data
-        logger.debug("turboseti_stream DataLoader load_file: spectra shape:", self.spectra.shape)
+        logger.debug("turboseti_stream DataLoader load_file: spectra shape: {}".format(self.spectra.shape))
 
 
     def get(self):
@@ -188,16 +194,18 @@ class DopplerFinder():
         # Start with the drift_indixes object.
         dia_num = int(np.log2(self.data_dict.tsteps))
         file_path = resource_filename('turbo_seti', f'drift_indexes/drift_indexes_array_{dia_num}.txt')
-        logger.debug("turboseti_stream drift_indexes tsteps={}, dia_num={}".format(self.data_dict.tsteps, dia_num))
+        logger.debug("turboseti_stream drift_indexes tsteps={}, dia_num={}"
+                     .format(self.data_dict.tsteps, dia_num))
         logger.debug("turboseti_stream drift_indexes file_path={}".format(file_path))
 
         assert os.path.isfile(file_path) # File exists?
 
         di_array = np.array(np.genfromtxt(file_path, delimiter=' ', dtype=int))
-        logger.debug("turboseti_stream drift_indexes di_array.shape:", di_array.shape)
+        logger.debug("turboseti_stream drift_indexes di_array.shape: {}".format(di_array.shape))
 
         ts2 = int(self.data_dict.tsteps / 2)
-        logger.debug("turboseti_stream self.data_dict.tsteps_valid - 1 - ts2:", self.data_dict.tsteps_valid - 1 - ts2)
+        logger.debug("turboseti_stream self.data_dict.tsteps_valid - 1 - ts2: " 
+                     + str(self.data_dict.tsteps_valid - 1 - ts2))
         drift_indexes = di_array[(self.data_dict.tsteps_valid - 1 - ts2), 0:self.data_dict.tsteps_valid]
 
         # Create the DataLoader object.
@@ -213,10 +221,12 @@ class DopplerFinder():
         if os.path.exists(path_dat):
             os.remove(path_dat)
         with open(path_log, "w") as fav:
+            fav.write(VERSION_ANNOUNCEMENTS)
             fav.write("turboseti_stream find_doppler_instance: {}\n\n".format(self.find_doppler_instance))
             fav.write("turboseti_stream data_dict: {}\n\n".format(self.data_dict))
         logwriter = LogWriter(path_log)
         filewriter = FileWriter(path_dat, self.header)
+        
         t1 = time.time()
         fd.search_coarse_channel(self.data_dict,
                                  self.find_doppler_instance,
@@ -240,3 +250,4 @@ class DopplerFinder():
         r""" find ET using a spectra matrix supplied by spectra_gen (synthetic) """
         self.dataloader.load_file(spectra_file_path)
         self._find_ET_common()
+
