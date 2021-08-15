@@ -13,7 +13,8 @@ import turbo_seti.find_doppler.find_doppler as fd
 from turbo_seti.find_doppler.file_writers import FileWriter, LogWriter
 
 
-DEBUGGING = False
+logger_name = 'find_doppler'
+logger = logging.getLogger(logger_name)
 
 
 class Map(dict):
@@ -64,23 +65,20 @@ class DataLoader():
         self.drift_indices = drift_indices
         self.data_obj = data_obj
         self.spectra = [0, 0]
-        if DEBUGGING:
-            print("DEBUG turboseti_stream DataLoader __init__: data_obj:", self.data_obj)
+        logger.debug("turboseti_stream DataLoader __init__: data_obj:", self.data_obj)
 
 
     def load(self, spectra):
         r""" Load telescope data from a Gnu Radio function """
         self.spectra = spectra
-        if DEBUGGING:
-            print("DEBUG turboseti_stream DataLoader load: spectra shape:", self.spectra.shape)
+        logger.debug("turboseti_stream DataLoader load: spectra shape:", self.spectra.shape)
 
 
     def load_file(self, spectra_file_path):
         r""" Load synthetic data created by spectra_gen which uses setigen """
         frame = stg.Frame(spectra_file_path)
         self.spectra = frame.data
-        if DEBUGGING:
-            print("DEBUG turboseti_stream DataLoader load_file: spectra shape:", self.spectra.shape)
+        logger.debug("turboseti_stream DataLoader load_file: spectra shape:", self.spectra.shape)
 
 
     def get(self):
@@ -115,6 +113,7 @@ class DopplerFinder():
                  precision=1,
                  gpu_id=0):
 
+        logger.setLevel(log_level_int)
         self.filename = filename
         self.out_dir = out_dir
 
@@ -189,19 +188,16 @@ class DopplerFinder():
         # Start with the drift_indixes object.
         dia_num = int(np.log2(self.data_dict.tsteps))
         file_path = resource_filename('turbo_seti', f'drift_indexes/drift_indexes_array_{dia_num}.txt')
-        if DEBUGGING:
-            print("DEBUG turboseti_stream drift_indexes tsteps={}, dia_num={}".format(self.data_dict.tsteps, dia_num))
-            print("DEBUG turboseti_stream drift_indexes file_path={}".format(file_path))
+        logger.debug("turboseti_stream drift_indexes tsteps={}, dia_num={}".format(self.data_dict.tsteps, dia_num))
+        logger.debug("turboseti_stream drift_indexes file_path={}".format(file_path))
 
         assert os.path.isfile(file_path) # File exists?
 
         di_array = np.array(np.genfromtxt(file_path, delimiter=' ', dtype=int))
-        if DEBUGGING:
-            print("DEBUG turboseti_stream drift_indexes di_array.shape:", di_array.shape)
+        logger.debug("turboseti_stream drift_indexes di_array.shape:", di_array.shape)
 
         ts2 = int(self.data_dict.tsteps / 2)
-        if DEBUGGING:
-            print("DEBUG turboseti_stream self.data_dict.tsteps_valid - 1 - ts2:", self.data_dict.tsteps_valid - 1 - ts2)
+        logger.debug("turboseti_stream self.data_dict.tsteps_valid - 1 - ts2:", self.data_dict.tsteps_valid - 1 - ts2)
         drift_indexes = di_array[(self.data_dict.tsteps_valid - 1 - ts2), 0:self.data_dict.tsteps_valid]
 
         # Create the DataLoader object.
@@ -231,8 +227,7 @@ class DopplerFinder():
               .format(time.time() - t1)
         with open(path_log, "a") as fav:
             fav.write(msg)
-        if DEBUGGING:
-            print(msg)
+        logger.debug(msg)
 
 
     def find_ET(self, spectra):
