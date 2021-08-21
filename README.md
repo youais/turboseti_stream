@@ -36,4 +36,8 @@ clancy.find_ET(spectra_supplied_by_a_gnu_radio_function)
 
 # Developer unit testing from a Filterbank file or HDF5 file:
 clancy.find_ET_from_file("/path-to-synthetic-gnu-radio-data.fil")
+```
 
+For further Python examples, see [here](https://github.com/youais/gr-turboseti/blob/master/examples/python_script_tests/turboseti_multiprocessing_test.py).
+
+For examples of .grc flowgraphs containing blocks using turboseti_stream, see [here](https://github.com/youais/gr-turboseti/tree/master/examples/example_flowgraphs).
